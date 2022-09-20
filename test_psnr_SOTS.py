@@ -85,7 +85,7 @@ def main (args):
     elapsed_time = 0
     num_running = 0
     import time
-    with open(os.path.join(out_dir, 'quantitative_results.txt'), 'w') as outfile:
+    with open(os.path.join(out_dir, 'quantitative_results_SOTS.txt'), 'w') as outfile:
         outfile.write(f'{ckpt_name}\n')
         for batchIdx, (hazy, clear, img_name) in enumerate(prog_bar):
             # try:
@@ -99,6 +99,7 @@ def main (args):
             J = J.clamp(0, 1)
 
             elapsed = time.time() - start
+            print(elapsed)
             elapsed_time += elapsed
             num_running += 1
 
@@ -140,7 +141,7 @@ if __name__=='__main__':
     else:
         args["outdir"] = os.path.join("/Jarvis/workspace/gwangjin/dehazing/cvf-results/", args["config"], args["config_lambda"])
         args["dataroot"] = os.path.join("/data1/gwangjin/dehazing_bench/RESIDE_standard")
-        # args["dataroot"] = os.path.join("/Bean/data/gwangjin/RESIDE_standard")
+        args["dataroot"] = os.path.join("/Bean/data/gwangjin/RESIDE_standard")
 
 
     print(args)

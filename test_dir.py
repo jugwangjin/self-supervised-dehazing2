@@ -56,8 +56,10 @@ def main(args):
     num_running = 0
     import time
 
+    dw = torch.nn.Upsample(scale_factor=0.25, mode='bilinear').cuda()
     for fn in tqdm.tqdm(sorted(os.listdir(args["img_dir"]))):
         try:
+            st = time.time()
             img_name = os.path.join(args["img_dir"], fn)
 
             img = Image.open(img_name).convert("RGB")
@@ -66,9 +68,13 @@ def main(args):
             if not args["cpu"]:
                 img = img.cuda()
 
-            start = time.process_time()
+            # img = dw(img)
+            en = time.time()
+            print(en - st)
+            start = time.time()
             T, A, J = f(img)
-            elapsed = time.process_time() - start
+            elapsed = time.time() - start
+            print(elapsed)
 
             rec = J * T + A * (1 - T)
 

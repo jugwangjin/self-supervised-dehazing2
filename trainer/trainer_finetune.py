@@ -33,6 +33,10 @@ class Trainer(torch.nn.Module):
 
         f = getattr(model, self.args["model"])()
 
+        ckpt_name = os.path.join(args["ckpt"])
+        ckpt = torch.load(ckpt_name)
+        f.load_state_dict(ckpt["f"])
+
         trainer = getattr(train_step, self.args["trainstep"])
 
         self.trainer = torch.nn.DataParallel(trainer(f, args).to(args["device"])) if args["usedataparallel"] else trainer(f, args).to(args["device"])
@@ -111,16 +115,17 @@ class Trainer(torch.nn.Module):
                             'optim': self.optimizer.state_dict()},
                             os.path.join(self.out_dir, 'checkpoints', 'best_val.tar'))
 
-                torch.save({'f': self.trainer.module.f.state_dict() if self.args["usedataparallel"]
-                                    else self.trainer.f.state_dict(),
-                            'optim': self.optimizer.state_dict()},
-                            os.path.join(self.out_dir, 'checkpoints', 'checkpoint.tar'))
             plt.clf()
             plt.plot(train_losses, label='train')
             plt.plot(validation_losses, label='validation')
             plt.legend()
             plt.savefig(os.path.join(self.out_dir, 'train_plot.png'))
 
+            if epoch % 10 == 0:
+                torch.save({'f': self.trainer.module.f.state_dict() if self.args["usedataparallel"]
+                                    else self.trainer.f.state_dict(),
+                            'optim': self.optimizer.state_dict()},
+                            os.path.join(self.out_dir, 'checkpoints', 'checkpoint.tar'))
 
         validation_loss = self.validation_epoch()
         torch.save({'f': self.trainer.module.f.state_dict() if self.args["usedataparallel"] 

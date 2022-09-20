@@ -27,11 +27,12 @@ if __name__=='__main__':
         args["lambdas"] = opt
 
     if args["use_bean"] == True:
-        args["outdir"] = os.path.join("/Bean/log/gwangjin/CVF-dehazing/", args["config"], args["config_lambda"])
+        # args["outdir"] = os.path.join("/Bean/log/gwangjin/CVF-dehazing/", args["config"], args["config_lambda"])
         args["dataroot"] = os.path.join("/Bean/data/gwangjin/", args["dataroot"])
     else:
-        args["outdir"] = os.path.join("/Jarvis/workspace/gwangjin/dehazing/cvf-results/", args["config"], args["config_lambda"])
+        # args["outdir"] = os.path.join("/Jarvis/workspace/gwangjin/dehazing/cvf-results/", args["config"], args["config_lambda"])
         args["dataroot"] = os.path.join("/data1/gwangjin/dehazing_bench/", args["dataroot"])
+    args["outdir"] = os.path.join("/Bean/log/gwangjin/CVF-dehazing/", args["config"], args["config_lambda"])
 
     print(args)
 

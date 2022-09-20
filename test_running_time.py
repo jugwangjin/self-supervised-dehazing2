@@ -85,23 +85,24 @@ def main (args):
     elapsed_time = 0
     num_running = 0
     import time
-    with open(os.path.join(out_dir, 'quantitative_results.txt'), 'w') as outfile:
+    with open(os.path.join(out_dir, 'quantitative_results_SOTS.txt'), 'w') as outfile:
         outfile.write(f'{ckpt_name}\n')
         for batchIdx, (hazy, clear, img_name) in enumerate(prog_bar):
             # try:
             hazy = hazy.to(args["device"])
             clear = clear.to(args["device"])
 
+            hazy_ = torch.randn(1, 3, 1920, 1080, device=hazy.device)
             start = time.time()
-
-            T, A, J = f(hazy)
+            T, A, J = f(hazy_)
 
             J = J.clamp(0, 1)
 
             elapsed = time.time() - start
+            print(elapsed)
             elapsed_time += elapsed
             num_running += 1
-
+            J = J[:, :, :hazy.shape[2], :hazy.shape[3]]
             psnr_list.extend(to_psnr(J, clear))
             ssim_list.extend(to_ssim_skimage(J, clear))
     
@@ -125,7 +126,7 @@ if __name__=='__main__':
     parser.add_argument('--latest', action='store_true', default=False)
     parser.add_argument('--use_bean', action='store_true', default=False)
     parser.add_argument('--cpu', action='store_true', default=False)
-    parser.add_argument('--testdataset', type=str, default='RESIDEStandardTestDataset')
+    parser.add_argument('--testdataset', type=str, default='HSTSDataset')
     args = parser.parse_args()
     args = vars(args)
     
